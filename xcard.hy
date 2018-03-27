@@ -1,1 +1,0 @@
-../xmlgen/xcard.hy
