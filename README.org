@@ -1,0 +1,136 @@
+* Google CSV -> Claws Mail Address Book
+  google-csv2claws-mail.awk is a [[https://www.gnu.org/software/gawk/][Gawk]] script for converting Google CSV files exported
+  from Google Contacts to Claws Mail address book XML files. 
+
+  google-csv2claws-mail.awk sends its output to stdout. The address book name
+  can be set by setting the NAME value. The default name is =google-contacts=.
+
+  #+BEGIN_SRC sh :eval no
+google-csv2claws-mail.awk -v NAME=val file.csv > file.xml
+  #+END_SRC
+
+  google-csv2claws-mail.awk is released to the public domain.  It is likely that
+  you will want to change how the Google contact data gets mapped to the Claws
+  Mail address book.
+
+  The Claws Mail email client's address book is located at
+  .claws-mail/addrbook/. The file =addrbook--index.xml=, contains a list of
+  address books.  The file =attributesrc= contains a list of attributes, which
+  you can add-to or edit. The address books are XML files with the following
+  schema:
+  #+BEGIN_SRC nxml :eval no
+<?xml version="1.0" encoding="UTF-8"?>
+<address-book name="[address-book-name]">
+  <!-- Zero or more persons -->
+  <person uid="[unique number]" first-name="[FName]" last-name="[LName]" nick-name="[NName]" cn="[Displayed Name]">
+    <address-list>
+      <!-- Zero or more addresses -->
+      <address uid="[unique number]" alias="[email alias]" email="[email address]" remarks="[additional info]" />
+    </address-list>
+    <attribute-list>
+      <!-- Zero or more attributes -->
+      <attribute uid="[unique number]" name="[a value in the attributesrc file]">
+	<!-- text value -->
+      </attribute>
+    </attribute-list>
+  </person>
+  <!-- Zero or more groups -->
+  <group uid="[unique number]" name="[group name]" remarks="[additional info]">
+    <member-list>
+      <!-- Zero or more members -->
+      <member pid="[person uid]" eid="[persons email address associated with this group]"/>
+    </member-list>
+  </group>
+  <!-- Zero or more folders -->
+  <folder uid="[unique number]" name="[folder name]" remarks="[additional info]">
+    <item-list>
+      <!-- Zero or more items -->
+      <item type="person|group|folder" uid="uid of person, group, or folder" />
+    </item-list>
+  </folder>
+</address-book>
+  #+END_SRC
+
+  Your =addrbook--index.xml= file should look something like:
+  #+BEGIN_SRC nxml :eval no
+<?xml version="1.0" encoding="UTF-8" ?>
+<addressbook>
+  <book_list>
+    <book name="google-contacts" file="addrbook-000001.xml" />
+  </book_list>
+  <vcard_list>
+  </vcard_list>
+  <jpilot_list>
+  </jpilot_list>
+  <ldap_list>
+  </ldap_list>
+</addressbook>
+  #+END_SRC
+** Google CSV File Fields
+   It is possible that your CSV is different, such as if you have a contact with
+   more than one physical address. Also, newlines in a field, such as the
+   address field, will show up in the CSV file.
+
+   1) Name
+   2) Given Name
+   3) Additional Name
+   4) Family Name
+   5) Yomi Name
+   6) Given Name Yomi
+   7) Additional Name Yomi
+   8) Family Name Yomi
+   9) Name Prefix
+   10) Name Suffix
+   11) Initials
+   12) Nickname
+   13) Short Name
+   14) Maiden Name
+   15) Birthday
+   16) Gender
+   17) Location
+   18) Billing Information
+   19) Directory Server
+   20) Mileage
+   21) Occupation
+   22) Hobby
+   23) Sensitivity
+   24) Priority
+   25) Subject
+   26) Notes
+   27) Group Membership
+   28) E-mail 1 - Type
+   29) E-mail 1 - Value
+   30) E-mail 2 - Type
+   31) E-mail 2 - Value
+   32) E-mail 3 - Type
+   33) E-mail 3 - Value
+   34) Phone 1 - Type
+   35) Phone 1 - Value
+   36) Phone 2 - Type
+   37) Phone 2 - Value
+   38) Phone 3 - Type
+   39) Phone 3 - Value
+   40) Address 1 - Type
+   41) Address 1 - Formatted
+   42) Address 1 - Street
+   43) Address 1 - City
+   44) Address 1 - PO Box
+   45) Address 1 - Region
+   46) Address 1 - Postal Code
+   47) Address 1 - Country
+   48) Address 1 - Extended Address
+   49) Organization 1 - Type
+   50) Organization 1 - Name
+   51) Organization 1 - Yomi Name
+   52) Organization 1 - Title
+   53) Organization 1 - Department
+   54) Organization 1 - Symbol
+   55) Organization 1 - Location
+   56) Organization 1 - Job Description
+   57) Website 1 - Type
+   58) Website 1 - Value
+   59) Website 2 - Type
+   60) Website 2 - Value
+   61) Custom Field 1 - Type
+   62) Custom Field 1 - Value
+
